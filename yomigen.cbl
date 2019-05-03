@@ -20,10 +20,6 @@
            01 I PIC 99.
            01 J PIC 99.
 
-
-
-
-
            01 CurrPlayer PIC 9.
            01 CurrGame PIC 99.
            01 ScoreGoal PIC 9.
@@ -130,7 +126,6 @@
            Display SPACE
            Display SPACE
            Perform ShowGameLog
-           Display Space
            Perform ShowFooter
 
            .
@@ -147,25 +142,29 @@
        ShowGameLog.
            Perform varying I from 1 by 1 until I is greater than 20
 
-               Move GameDataCharacter(I, 1) to TEXT2PRINT
-               Perform SHOW-EMOTE
+               IF GameDataCharacter(I, 1)(1:1) not equal SPACES then
 
-               Display " " with no advancing
+                   Move GameDataCharacter(I, 1) to TEXT2PRINT
+                   Perform SHOW-EMOTE
 
-               Move GameDataScore(I, 1) to NUM2PRINT
-               Perform SHOW-VICTORY-EMOTE
+                   Display " " with no advancing
 
-               Display " " with no advancing
+                   Move GameDataScore(I, 1) to NUM2PRINT
+                   Perform SHOW-VICTORY-EMOTE
 
-               Move GameDataScore(I, 2) to NUM2PRINT
-               Perform SHOW-VICTORY-EMOTE
+                   Display " " with no advancing
 
-               Display " " with no advancing
+                   Move GameDataScore(I, 2) to NUM2PRINT
+                   Perform SHOW-VICTORY-EMOTE
 
-               Move GameDataCharacter(I, 1) to TEXT2PRINT
-               Perform SHOW-EMOTE
+                   Display " " with no advancing
 
-               Display SPACE
+                   Move GameDataCharacter(I, 1) to TEXT2PRINT
+                   Perform SHOW-EMOTE
+
+                   Display SPACE
+
+               END-IF
 
            End-Perform
            .

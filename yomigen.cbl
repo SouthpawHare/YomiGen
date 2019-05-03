@@ -20,8 +20,12 @@
            01 I PIC 99.
            01 J PIC 99.
 
+           01 CharacterNameTemp PIC X(10).
+           01 CharacterAbbrev PIC X(3).
+
            01 CurrPlayer PIC 9.
            01 CurrGame PIC 99.
+           01 TempGameVal PIC 99.
            01 ScoreGoal PIC 9.
                88 ScoreGoal-Valid Value '1' thru '9'.
 
@@ -117,11 +121,81 @@
            .
 
        InputCharacter.
-           Display "Enter Player " CurrPlayer "'s character"
-           Accept GameDataCharacter(CurrGame, CurrPlayer)
+           MOVE SPACES to CharacterAbbrev
+           MOVE SPACES to CharacterNameTemp
+           Perform until CharacterNameTemp not EQUAL SPACES
+               Display "Enter Player " CurrPlayer "'s character"
+               Display "(arg,bbb,deg,gei,glo,gra,gwe,jai,lum,men,mid,oni"
+      -        ",per,qui,roo,set,tro,val,ven,zan)"
+
+               if CurrGame not equals 1 THEN
+                   Display "<BLANK> = Same as last round"
+               END-IF
+               Accept CharacterAbbrev
+
+               Evaluate CharacterAbbrev
+                When "arg"
+                   MOVE "Argagarg" to CharacterNameTemp
+                When "bbb"
+                   MOVE "BBB" to CharacterNameTemp
+                When "deg"
+                   MOVE "DeGrey" to CharacterNameTemp
+                When "gei"
+                   MOVE "Geiger" to CharacterNameTemp
+                When "glo"
+                   MOVE "Gloria" to CharacterNameTemp
+                When "gra"
+                   MOVE "Grave" to CharacterNameTemp
+                When "gwe"
+                   MOVE "Gwen" to CharacterNameTemp
+                When "jai"
+                   MOVE "Jaina" to CharacterNameTemp
+                When "lum"
+                   MOVE "Lum" to CharacterNameTemp
+                When "men"
+                   MOVE "Menelker" to CharacterNameTemp
+                When "mid"
+                   MOVE "Midori" to CharacterNameTemp
+                When "oni"
+                   MOVE "Onimaru" to CharacterNameTemp
+                When "per"
+                   MOVE "Persephone" to CharacterNameTemp
+                When "qui"
+                   MOVE "Quince" to CharacterNameTemp
+                When "roo"
+                   MOVE "Rook" to CharacterNameTemp
+                When "set"
+                   MOVE "Setsuki" to CharacterNameTemp
+                When "tro"
+                   MOVE "Troq" to CharacterNameTemp
+                When "val"
+                   MOVE "Valerie" to CharacterNameTemp
+                When "ven"
+                   MOVE "Vendetta" to CharacterNameTemp
+                When "zan"
+                   MOVE "Zane" to CharacterNameTemp
+               END-EVALUATE
+
+               IF CharacterAbbrev EQUAL SPACES AND
+                CurrGame Greater Than 1 THEN
+                   Move CurrGame to TempGameVal
+                   Subtract 1 from TempGameVal
+                   MOVE GameDataCharacter(TempGameVal, CurrPlayer)
+                    to CharacterNameTemp
+               END-IF
+
+           END-PERFORM
+"
+           Move CharacterNameTemp to
+            GameDataCharacter(CurrGame, CurrPlayer)
 
            .
        ShowFinalMessage.
+           Display SPACE
+           Display SPACE
+           Display "--------------------"
+           Display SPACE
+           Display SPACE
            Perform ShowHeader
            Display SPACE
            Display SPACE
@@ -131,7 +205,6 @@
            .
 
        ShowHeader.
-           Display SPACE
            MOVE PlayerName(1) to TEXT2PRINT
            PERFORM SHOW-TEXT
            DISPLAY " vs " with no ADVANCING
@@ -159,7 +232,7 @@
 
                    Display " " with no advancing
 
-                   Move GameDataCharacter(I, 1) to TEXT2PRINT
+                   Move GameDataCharacter(I, 2) to TEXT2PRINT
                    Perform SHOW-EMOTE
 
                    Display SPACE
@@ -177,6 +250,23 @@
            Display " " Score(1) " - " Score(2) " " with no ADVANCING
            MOVE PlayerName(2) to TEXT2PRINT
            PERFORM SHOW-TEXT
+           Display SPACE
+
+           Move SPACES to TEXT2PRINT
+           If Score(1) greater than Score(2) THEN
+               MOVE PlayerName(1) to TEXT2PRINT
+           ELSE
+               If Score(2) greater than Score(1) THEN
+                   MOVE PlayerName(2) to TEXT2PRINT
+               End-if
+           End-if
+
+           If TEXT2PRINT not equal SPACES THEN
+               Perform SHOW-TEXT
+               Display " wins!"
+           ELSE
+               Display "Inconclusive result!"
+           End-if
            .
 
        SHOW-TEXT.
